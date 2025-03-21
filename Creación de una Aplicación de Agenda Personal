@@ -1,0 +1,68 @@
+import tkinter as tk
+from tkinter import ttk, messagebox
+from tkcalendar import DateEntry
+
+def add_event():
+    date = date_entry.get()
+    time = time_entry.get()
+    description = description_entry.get()
+    if date and time and description:
+        tree.insert('', 'end', values=(date, time, description))
+        date_entry.set_date('')
+        time_entry.delete(0, tk.END)
+        description_entry.delete(0, tk.END)
+    else:
+        messagebox.showwarning("Entrada inválida", "Todos los campos deben estar completos.")
+
+def delete_event():
+    selected_item = tree.selection()
+    if selected_item:
+        confirm = messagebox.askyesno("Confirmación", "¿Estás seguro de que deseas eliminar el evento seleccionado?")
+        if confirm:
+            tree.delete(selected_item)
+    else:
+        messagebox.showwarning("Eliminar Evento", "Seleccione un evento para eliminar.")
+
+def exit_app():
+    root.quit()
+
+root = tk.Tk()
+root.title("Gestor de Eventos")
+root.geometry("500x400")
+
+# Frame para la lista de eventos
+frame_list = tk.Frame(root)
+frame_list.pack(pady=10)
+
+columns = ("Fecha", "Hora", "Descripción")
+tree = ttk.Treeview(frame_list, columns=columns, show='headings')
+for col in columns:
+    tree.heading(col, text=col)
+    tree.column(col, width=150)
+tree.pack()
+
+# Frame para entrada de datos
+frame_input = tk.Frame(root)
+frame_input.pack(pady=10)
+
+tk.Label(frame_input, text="Fecha:").grid(row=0, column=0)
+date_entry = DateEntry(frame_input, width=12, background='darkblue', foreground='white', borderwidth=2)
+date_entry.grid(row=0, column=1)
+
+tk.Label(frame_input, text="Hora:").grid(row=1, column=0)
+time_entry = tk.Entry(frame_input)
+time_entry.grid(row=1, column=1)
+
+tk.Label(frame_input, text="Descripción:").grid(row=2, column=0)
+description_entry = tk.Entry(frame_input)
+description_entry.grid(row=2, column=1)
+
+# Frame para botones
+frame_buttons = tk.Frame(root)
+frame_buttons.pack(pady=10)
+
+tk.Button(frame_buttons, text="Agregar Evento", command=add_event).grid(row=0, column=0, padx=5)
+tk.Button(frame_buttons, text="Eliminar Evento", command=delete_event).grid(row=0, column=1, padx=5)
+tk.Button(frame_buttons, text="Salir", command=exit_app).grid(row=0, column=2, padx=5)
+
+root.mainloop()
